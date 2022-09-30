@@ -63,5 +63,3 @@ async function upload(options: {
 
 
 ```
-
-## 用法
