@@ -22,9 +22,8 @@
 ```
 
 ```sh
-yarn react-native-hw-obs
-cd ios
-pod install
+yarn add react-native-hw-obs
+cd ios && pod install
 ```
 
 ## 使用
