@@ -1,4 +1,9 @@
-import { NativeModules, Platform } from 'react-native';
+import {
+  DeviceEventEmitter,
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
+} from 'react-native';
 import sha256 from 'sha256';
 
 const LINKING_ERROR =
@@ -98,44 +103,51 @@ export const upload = (options: {
   );
 };
 
-// /**
-//  * 上传进度监听
-//  * @param event 事件名 uploadProgress | downloadProgress
-//  * @param callback
-//  */
-// export function addEventListener(
-//   event: IEvent,
-//   callback: (params?: any) => any
-// ) {
-//   const Emitter =
-//     Platform.OS === 'ios' ? new NativeEventEmitter(HwObs) : DeviceEventEmitter;
-//   switch (event) {
-//     case 'uploadProgress':
-//       subscription = Emitter.addListener('uploadProgress', (e) => callback(e));
-//       break;
-//     case 'downloadProgress':
-//       subscription = Emitter.addListener('downloadProgress', (e) =>
-//         callback(e)
-//       );
-//       break;
-//     default:
-//       break;
-//   }
-// }
+let subscription: any;
 
-// /**
-//  * 移除事件监听
-//  * @param event 事件名 uploadProgress | downloadProgress
-//  */
-// export function removeEventListener(event: IEvent) {
-//   switch (event) {
-//     case 'uploadProgress':
-//       subscription.remove();
-//       break;
-//     case 'downloadProgress':
-//       subscription.remove();
-//       break;
-//     default:
-//       break;
-//   }
-// }
+export enum ReactNativeHWObsEvent {
+  'uploadProgress' = 'uploadProgress',
+  'downloadProgress' = 'downloadProgress',
+}
+
+/**
+ * 上传进度监听
+ * @param event 事件名 uploadProgress | downloadProgress
+ * @param callback
+ */
+export function addEventListener(
+  event: ReactNativeHWObsEvent,
+  callback: (params: { currentSize: string; totalSize: string }) => void
+) {
+  const Emitter =
+    Platform.OS === 'ios' ? new NativeEventEmitter(HwObs) : DeviceEventEmitter;
+  switch (event) {
+    case ReactNativeHWObsEvent.uploadProgress:
+      subscription = Emitter.addListener('uploadProgress', (e) => callback(e));
+      break;
+    case ReactNativeHWObsEvent.downloadProgress:
+      subscription = Emitter.addListener('downloadProgress', (e) =>
+        callback(e)
+      );
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ * 移除事件监听
+ * @param event 事件名 uploadProgress | downloadProgress
+ */
+export function removeEventListener(event: ReactNativeHWObsEvent) {
+  switch (event) {
+    case ReactNativeHWObsEvent.uploadProgress:
+      subscription.remove();
+      break;
+    case ReactNativeHWObsEvent.downloadProgress:
+      subscription.remove();
+      break;
+    default:
+      break;
+  }
+}

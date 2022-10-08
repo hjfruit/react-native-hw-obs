@@ -7,7 +7,7 @@
 
 ## 待实现
 
-- [ ] 上传进度事件实现
+- [x] 上传进度事件实现
 - [ ] 其他上传模式支持
 
 ## 安装
@@ -31,8 +31,8 @@ cd ios && pod install
 1. 首先初始化客户端
 2. 然后调用 upload 方法
 
-```js
-import { initWithSecurityToken, upload  } from "react-native-obs";
+```ts
+import { initWithSecurityToken, upload } from 'react-native-obs';
 
 /**
  * 初始化客户端
@@ -46,7 +46,7 @@ function initWithSecurityToken(options: {
   accessKey: string;
   secretKey: string;
   endPoint: string;
-})
+});
 
 /**
  * 上传 obs
@@ -59,7 +59,21 @@ async function upload(options: {
   bucketname: string;
   localfile: string;
   checkpoint: boolean;
-})
+});
 
+/**
+ * 上传进度监听
+ * @param event 事件名 uploadProgress | downloadProgress
+ * @param callback
+ */
+export function addEventListener(
+  event: ReactNativeHWObsEvent,
+  callback: (params: { currentSize: string; totalSize: string }) => void
+);
 
+/**
+ * 移除事件监听
+ * @param event 事件名 uploadProgress | downloadProgress
+ */
+export function removeEventListener(event: ReactNativeHWObsEvent);
 ```

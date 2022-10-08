@@ -60,20 +60,20 @@ public class HwObsModule extends ReactContextBaseJavaModule {
             request.setPartSize(1024 * 1024);
             request.setEnableCheckpoint(checkpoint);
 
-            // request.setProgressListener(new ProgressListener() {
-            //     @Override
-            //     public void progressChanged(ProgressStatus progressStatus) {
-            //         long currentSize = progressStatus.getTransferredBytes();
-            //         long totalSize = progressStatus.getTotalBytes();
-            //         String str_currentSize = Long.toString(currentSize);
-            //         String str_totalSize = Long.toString(totalSize);
-            //         WritableMap onProgressValueData = Arguments.createMap();
-            //         onProgressValueData.putString("currentSize", str_currentSize);
-            //         onProgressValueData.putString("totalSize", str_totalSize);
-            //         context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-            //                 .emit("uploadProgress", onProgressValueData);
-            //     }
-            // });
+            request.setProgressListener(new ProgressListener() {
+                @Override
+                public void progressChanged(ProgressStatus progressStatus) {
+                    long currentSize = progressStatus.getTransferredBytes();
+                    long totalSize = progressStatus.getTotalBytes();
+                    String str_currentSize = Long.toString(currentSize);
+                    String str_totalSize = Long.toString(totalSize);
+                    WritableMap onProgressValueData = Arguments.createMap();
+                    onProgressValueData.putString("currentSize", str_currentSize);
+                    onProgressValueData.putString("totalSize", str_totalSize);
+                    context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                            .emit("uploadProgress", onProgressValueData);
+                }
+            });
 
             CompleteMultipartUploadResult result = obsClient.uploadFile(request);
             promise.resolve(result.getObjectUrl());
