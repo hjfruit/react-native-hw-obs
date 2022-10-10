@@ -4,7 +4,6 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
-import sha256 from 'sha256';
 
 const LINKING_ERROR =
   `The package 'react-native-hw-obs' doesn't seem to be linked. Make sure: \n\n` +
@@ -25,20 +24,12 @@ const HwObs = NativeModules.HwObs
 
 let endPoint = '';
 
-const getFilesuffix = (fileName: string) => {
-  return fileName.split('.').pop()?.toLowerCase();
-};
-
-const createObjectname = (uri: string) => {
-  return sha256(uri);
-};
-
 const mergeFileUrl = (
-  bucketname: string,
+  bucketName: string,
   endPoint: string,
   fileName: string
 ) => {
-  return `${bucketname}.${endPoint}/${fileName}`;
+  return `${bucketName}.${endPoint}/${fileName}`;
 };
 
 /**
@@ -68,32 +59,34 @@ export function initWithSecurityToken(options: {
 /**
  * 上传 obs
  * @param options
- * bucketname 桶名
- * objectname 对象名
- * localfile 文件地址
+ * bucketName 桶名
+ * objectName 对象名
+ * fileName 文件名（用于存储地址，建议唯一）
+ * localFile 文件地址
  * checkpoint 是否断点续传
  * @returns Promise<{fileId: string, fileUrl: string}> obs 文件地址
  */
 export const upload = (options: {
-  bucketname: string;
-  localfile: string;
+  bucketName: string;
+  localFile: string;
+  fileName: string;
   checkpoint: boolean;
 }) => {
   return new Promise(
-    (resolve: (value: { fileId: String; fileUrl: string }) => void, reject) => {
-      const objectname = createObjectname(options.localfile);
-      const suffix = getFilesuffix(options.localfile);
-      const fileName = `${objectname.slice(0, 2)}/${objectname}.${suffix}`;
+    (resolve: (value: { fileUrl: string }) => void, reject) => {
       HwObs.upload(
-        options.bucketname,
-        fileName,
-        options.localfile,
+        options.bucketName,
+        options.fileName,
+        options.localFile,
         options.checkpoint
       )
         .then(() => {
           resolve({
-            fileId: objectname,
-            fileUrl: mergeFileUrl(options.bucketname, endPoint, fileName),
+            fileUrl: mergeFileUrl(
+              options.bucketName,
+              endPoint,
+              options.fileName
+            ),
           });
         })
         .catch((err: any) => {

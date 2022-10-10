@@ -19,8 +19,9 @@ export default function App() {
         mediaType: 'photo',
       });
       const data = await upload({
-        bucketname: '',
-        localfile: result.assets?.[0]?.uri || '',
+        bucketName: '',
+        localFile: result.assets?.[0]?.uri || '',
+        fileName: '',
         checkpoint: true,
       });
       console.log(data);
@@ -31,16 +32,16 @@ export default function App() {
   };
 
   React.useEffect(() => {
-    addEventListener(ReactNativeHWObsEvent.uploadProgress, (params) => {
-      const { currentSize, totalSize } = params;
-      console.log(params);
-      console.log(Number(currentSize) / Number(totalSize));
-    });
     initWithSecurityToken({
       securityToken: '',
       accessKey: '',
       secretKey: '',
       endPoint: '',
+    });
+    addEventListener(ReactNativeHWObsEvent.uploadProgress, (params) => {
+      const { currentSize, totalSize } = params;
+      console.log(params);
+      console.log(Number(currentSize) / Number(totalSize));
     });
   }, []);
 

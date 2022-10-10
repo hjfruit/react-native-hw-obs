@@ -4,11 +4,7 @@
 
 1. 基于华为云 OBS 临时 token 模式封装的 ReactNative 桥接包
 2. 默认集成断点续传功能
-
-## 待实现
-
-- [x] 上传进度事件实现
-- [ ] 其他上传模式支持
+3. 上传文件进度监听返回
 
 ## 安装
 
@@ -28,11 +24,19 @@ cd ios && pod install
 
 ## 使用
 
-1. 首先初始化客户端
-2. 然后调用 upload 方法
+> 具体使用详见 example
+
+1. 初始化客户端
+2. 调用 upload 方法
+3. 监听文件上传进度
 
 ```ts
-import { initWithSecurityToken, upload } from 'react-native-obs';
+import {
+  initWithSecurityToken,
+  upload,
+  addEventListener,
+  removeEventListener,
+} from 'react-native-obs';
 
 /**
  * 初始化客户端
@@ -50,14 +54,16 @@ function initWithSecurityToken(options: {
 
 /**
  * 上传 obs
- * @param bucketname 桶名
- * @param localfile 文件 url
+ * @param bucketName 桶名
+ * @param localFile 文件 url
+ * @param fileName 文件名（用于存储地址，建议唯一）
  * @param checkpoint 是否断点续传
  * @returns Promise<{fileId: string, fileUrl: string}> obs 文件地址
  */
 async function upload(options: {
-  bucketname: string;
-  localfile: string;
+  bucketName: string;
+  localFile: string;
+  fileName: string;
   checkpoint: boolean;
 });
 
