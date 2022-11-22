@@ -10,22 +10,28 @@ import {
 } from 'react-native-hw-obs';
 import { launchImageLibrary } from 'react-native-image-picker';
 
+const bucketName = '';
+const endPoint = '';
+const ak = '';
+const sk = '';
+const st = '';
+
 export default function App() {
   const [source, setSource] = useState<string>();
 
   const onUpload = async () => {
     try {
       const result = await launchImageLibrary({
-        mediaType: 'photo',
+        mediaType: 'mixed',
       });
       const data = await upload({
-        bucketName: '',
+        bucketName,
         localFile: result.assets?.[0]?.uri || '',
-        fileName: '',
         checkpoint: true,
       });
       console.log(data);
-      setSource(data.fileUrl);
+      const fileUrl = data.fileUrl;
+      setSource(`https://${fileUrl}`);
     } catch (error) {
       console.error(error);
     }
@@ -33,10 +39,10 @@ export default function App() {
 
   React.useEffect(() => {
     initWithSecurityToken({
-      securityToken: '',
-      accessKey: '',
-      secretKey: '',
-      endPoint: '',
+      securityToken: st,
+      accessKey: ak,
+      secretKey: sk,
+      endPoint,
     });
     addEventListener(ReactNativeHWObsEvent.uploadProgress, (params) => {
       const { currentSize, totalSize } = params;

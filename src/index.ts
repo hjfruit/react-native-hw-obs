@@ -4,6 +4,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
+import CryptoJS from 'crypto-js';
 
 const LINKING_ERROR =
   `The package 'react-native-hw-obs' doesn't seem to be linked. Make sure: \n\n` +
@@ -33,6 +34,21 @@ const mergeFileUrl = (
 };
 
 /**
+ * 获取文件后缀名
+ * @param fileName 包含后缀的文件名
+ * @returns 文件后缀名
+ */
+const getFileSuffix = (fileName: string) => {
+  return fileName.split('.').pop()?.toLowerCase();
+};
+
+const getObjectName = (uri: string) => {
+  const fileId = CryptoJS.SHA256(uri).toString();
+  const suffix = getFileSuffix(uri);
+  return `${fileId.slice(0, 2)}/${fileId}.${suffix}`;
+};
+
+/**
  * 初始化客户端
  * @param options
  * securityToken 临时 token
@@ -47,6 +63,10 @@ export function initWithSecurityToken(options: {
   endPoint: string;
 }) {
   endPoint = options.endPoint;
+  if (endPoint.includes('http')) {
+    console.error('endPoint格式错误');
+    return;
+  }
   const hwEndPoint = `http://${options.endPoint}`;
   HwObs.initWithSecurityToken(
     options.securityToken,
@@ -69,24 +89,20 @@ export function initWithSecurityToken(options: {
 export const upload = (options: {
   bucketName: string;
   localFile: string;
-  fileName: string;
   checkpoint: boolean;
 }) => {
   return new Promise(
     (resolve: (value: { fileUrl: string }) => void, reject) => {
+      const objectName = getObjectName(options.localFile);
       HwObs.upload(
         options.bucketName,
-        options.fileName,
+        objectName,
         options.localFile,
         options.checkpoint
       )
         .then(() => {
           resolve({
-            fileUrl: mergeFileUrl(
-              options.bucketName,
-              endPoint,
-              options.fileName
-            ),
+            fileUrl: mergeFileUrl(options.bucketName, endPoint, objectName),
           });
         })
         .catch((err: any) => {
