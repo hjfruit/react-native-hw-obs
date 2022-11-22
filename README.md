@@ -56,14 +56,12 @@ function initWithSecurityToken(options: {
  * 上传 obs
  * @param bucketName 桶名
  * @param localFile 文件 url
- * @param fileName 文件名（用于存储地址，建议唯一）
  * @param checkpoint 是否断点续传
  * @returns Promise<{fileId: string, fileUrl: string}> obs 文件地址
  */
 async function upload(options: {
   bucketName: string;
   localFile: string;
-  fileName: string;
   checkpoint: boolean;
 });
 
