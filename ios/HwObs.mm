@@ -45,7 +45,7 @@ RCT_EXPORT_METHOD(upload:(NSString *)bucketname
 
     OBSUploadFileRequest *request = [[OBSUploadFileRequest alloc]initWithBucketName:bucketname objectKey:objectname uploadFilePath:localUrl.path];
     request.partSize = [NSNumber numberWithInteger: 1024*1024];
-    request.enableCheckpoint = checkpoint;
+    request.enableCheckpoint = *(checkpoint);
 
     request.uploadProgressBlock = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
         if (self.hasListeners) {
