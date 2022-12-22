@@ -86,20 +86,11 @@ export function initWithSecurityToken(options: {
  * checkpoint 是否断点续传
  * @returns Promise<{fileId: string, fileUrl: string}> obs 文件地址
  */
-export const upload = (options: {
-  bucketName: string;
-  localFile: string;
-  checkpoint: boolean;
-}) => {
+export const upload = (options: { bucketName: string; localFile: string }) => {
   return new Promise(
     (resolve: (value: { fileUrl: string }) => void, reject) => {
       const objectName = getObjectName(options.localFile);
-      HwObs.upload(
-        options.bucketName,
-        objectName,
-        options.localFile,
-        options.checkpoint
-      )
+      HwObs.upload(options.bucketName, objectName, options.localFile)
         .then(() => {
           resolve({
             fileUrl: mergeFileUrl(options.bucketName, endPoint, objectName),

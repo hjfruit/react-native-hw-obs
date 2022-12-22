@@ -35,7 +35,6 @@ RCT_EXPORT_METHOD(initWithSecurityToken:(NSString *)securityToken
 RCT_EXPORT_METHOD(upload:(NSString *)bucketname
                   objectname:(NSString *)objectname
                   localfile:(NSString *)localfile
-                  checkpoint:(BOOL *)checkpoint
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     _client.configuration.maxConcurrentUploadRequestCount = 5;
@@ -45,7 +44,7 @@ RCT_EXPORT_METHOD(upload:(NSString *)bucketname
 
     OBSUploadFileRequest *request = [[OBSUploadFileRequest alloc]initWithBucketName:bucketname objectKey:objectname uploadFilePath:localUrl.path];
     request.partSize = [NSNumber numberWithInteger: 1024*1024];
-    request.enableCheckpoint = *(checkpoint);
+    request.enableCheckpoint = YES;
 
     request.uploadProgressBlock = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
         if (self.hasListeners) {

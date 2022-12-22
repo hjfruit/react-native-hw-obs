@@ -50,7 +50,7 @@ public class HwObsModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void upload(String bucketname, String objectname, String localfile, Boolean checkpoint, final Promise promise) {
+    public void upload(String bucketname, String objectname, String localfile, final Promise promise) {
         try {
             UploadFileRequest request = new UploadFileRequest(bucketname, objectname);
             URL fileURL = new URL(localfile);
@@ -58,7 +58,7 @@ public class HwObsModule extends ReactContextBaseJavaModule {
             request.setUploadFile(uploadFile.getPath());
             request.setTaskNum(5);
             request.setPartSize(1024 * 1024);
-            request.setEnableCheckpoint(checkpoint);
+            request.setEnableCheckpoint(true);
 
             request.setProgressListener(new ProgressListener() {
                 @Override
