@@ -17,6 +17,23 @@
 </dict>
 ```
 
+```xml
+// Podfile 添加以下代码
+post_install do |installer|
+ installer.pods_project.targets.each do |target|
+   target.build_configurations.each do |config|
+     config.build_settings['ENABLE_BITCODE'] = 'NO'
+   end
+ end
+end
+```
+
+```xml
+// 在Xcode中修改
+project => enable bitcode 选择 No
+target => enable bitcode 选择 No
+```
+
 ```sh
 yarn add react-native-hw-obs
 cd ios && pod install
